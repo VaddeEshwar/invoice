@@ -10,6 +10,7 @@
 :root{
   --primary:#4F46E5;--primary-dark:#3730A3;--primary-light:#EEF2FF;
   --success:#10B981;--warning:#F59E0B;--danger:#EF4444;--info:#3B82F6;
+  --whatsapp:#25D366;--whatsapp-dark:#128C7E;
   --gray-50:#F9FAFB;--gray-100:#F3F4F6;--gray-200:#E5E7EB;--gray-300:#D1D5DB;
   --gray-400:#9CA3AF;--gray-500:#6B7280;--gray-600:#4B5563;--gray-700:#374151;
   --gray-800:#1F2937;--gray-900:#111827;
@@ -36,6 +37,7 @@ body{font-family:'Inter',sans-serif;background:var(--gray-50);color:var(--gray-8
 .btn-danger{background:var(--danger);color:#fff;}
 .btn-warning{background:var(--warning);color:#fff;}
 .btn-outline{background:transparent;color:var(--primary);border:1.5px solid var(--primary);}
+.btn-whatsapp{background:var(--whatsapp);color:#fff;}.btn-whatsapp:hover{background:var(--whatsapp-dark);}
 .btn-sm{padding:6px 14px;font-size:13px;}
 .btn-block{width:100%;justify-content:center;padding:13px;}
 .btn:disabled{opacity:.5;cursor:not-allowed;}
@@ -130,6 +132,8 @@ tbody td{padding:14px 16px;font-size:14px;}
 .alert{padding:12px 16px;border-radius:10px;font-size:14px;margin-bottom:16px;}
 .alert-error{background:#FEF2F2;color:#991B1B;border:1px solid #FECACA;}
 .alert-success{background:#ECFDF5;color:#065F46;border:1px solid #A7F3D0;}
+.alert-warning{background:#FFFBEB;color:#92400E;border:1px solid #FDE68A;}
+.alert-whatsapp{background:#F0FDF4;color:#14532D;border:1px solid #BBF7D0;}
 
 /* ===== SEARCH BAR ===== */
 .search-bar{position:relative;}
@@ -145,6 +149,26 @@ tbody td{padding:14px 16px;font-size:14px;}
 .empty{text-align:center;padding:60px 20px;color:var(--gray-400);}
 .empty i{font-size:48px;margin-bottom:12px;display:block;}
 .empty p{font-size:15px;}
+
+/* ===== WHATSAPP TOGGLE ===== */
+.wa-toggle-wrap{display:flex;align-items:center;gap:10px;padding:12px 16px;background:#F0FDF4;border:1.5px solid #BBF7D0;border-radius:10px;margin-bottom:16px;}
+.wa-toggle-wrap label{font-size:13px;font-weight:600;color:#14532D;cursor:pointer;display:flex;align-items:center;gap:8px;}
+.wa-toggle-wrap .wa-icon{color:var(--whatsapp);font-size:18px;}
+.toggle-switch{position:relative;display:inline-block;width:42px;height:24px;flex-shrink:0;}
+.toggle-switch input{opacity:0;width:0;height:0;}
+.toggle-slider{position:absolute;cursor:pointer;inset:0;background:var(--gray-300);border-radius:24px;transition:.3s;}
+.toggle-slider:before{content:'';position:absolute;width:18px;height:18px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.3s;}
+.toggle-switch input:checked + .toggle-slider{background:var(--whatsapp);}
+.toggle-switch input:checked + .toggle-slider:before{transform:translateX(18px);}
+.wa-preview-box{background:#e2ffc7;border-radius:12px 12px 12px 0;padding:12px 14px;font-size:13px;color:#111;line-height:1.6;max-width:340px;border:1px solid #c3f7a0;margin-top:8px;font-family:inherit;white-space:pre-wrap;}
+.wa-preview-label{font-size:11px;font-weight:700;color:var(--whatsapp-dark);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;}
+
+/* ===== WA STATUS CHIP ===== */
+.wa-status{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;padding:3px 8px;border-radius:20px;}
+.wa-status.sent{background:#DCFCE7;color:#15803D;}
+.wa-status.failed{background:#FEE2E2;color:#DC2626;}
+.wa-status.skipped{background:#F3F4F6;color:var(--gray-500);}
+.wa-status.no-phone{background:#FEF9C3;color:#854D0E;}
 
 /* ===== RESPONSIVE ===== */
 @media(max-width:768px){
@@ -164,17 +188,11 @@ tbody td{padding:14px 16px;font-size:14px;}
   .modal{border-radius:12px;}
   .login-card{padding:32px 20px;}
 }
-
-/* ===== OVERLAY CLOSE ===== */
 .sidebar-overlay{display:none;position:fixed;inset:0;z-index:99;background:rgba(0,0,0,.3);}
 .sidebar-overlay.open{display:block;}
-
-/* ===== TABS ===== */
 .tabs{display:flex;gap:4px;border-bottom:2px solid var(--gray-200);margin-bottom:24px;}
 .tab{padding:10px 18px;font-size:14px;font-weight:500;cursor:pointer;color:var(--gray-500);border-bottom:2px solid transparent;margin-bottom:-2px;transition:.2s;}
 .tab.active{color:var(--primary);border-bottom-color:var(--primary);font-weight:600;}
-
-/* ===== SELECT STATUS ===== */
 select.status-sel{padding:5px 10px;border-radius:8px;border:1.5px solid var(--gray-200);font-size:13px;cursor:pointer;font-family:inherit;}
 </style>
 </head>
@@ -223,6 +241,9 @@ select.status-sel{padding:5px 10px;border-radius:8px;border:1.5px solid var(--gr
       </div>
       <div class="nav-item superadmin-only hidden" onclick="showPage('users')" id="nav-users">
         <i class="fas fa-users"></i> Users
+      </div>
+      <div class="nav-item superadmin-only hidden" onclick="showPage('settings')" id="nav-settings">
+        <i class="fab fa-whatsapp"></i> WA Settings
       </div>
     </div>
     <div class="sidebar-footer">
@@ -306,6 +327,46 @@ select.status-sel{padding:5px 10px;border-radius:8px;border:1.5px solid var(--gr
         </div>
       </div>
 
+      <!-- ===== WA SETTINGS ===== -->
+      <div id="page-settings" class="hidden">
+        <div class="card" style="max-width:680px;">
+          <div style="display:flex;align-items:center;gap:14px;margin-bottom:24px;">
+            <div style="width:48px;height:48px;background:#DCFCE7;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;color:var(--whatsapp);">
+              <i class="fab fa-whatsapp"></i>
+            </div>
+            <div>
+              <h3 style="font-size:17px;font-weight:700;">WhatsApp Notification Settings</h3>
+              <p style="font-size:13px;color:var(--gray-500);margin-top:2px;">Configure CloudWhatsApp API for invoice alerts</p>
+            </div>
+          </div>
+          <div id="settingsAlert"></div>
+          <div class="form-group">
+            <label>CloudWhatsApp API Key *</label>
+            <input type="text" id="settingsApiKey" placeholder="e.g. f2845d39c75c4901b4ce35f672392da6"/>
+            <p style="font-size:12px;color:var(--gray-400);margin-top:4px;">Found in your CloudWhatsApp dashboard under API Keys</p>
+          </div>
+          <div class="form-group">
+            <label>API Endpoint URL</label>
+            <input type="text" id="settingsApiUrl" value="http://login.cloudwhatsapp.com/wapp/api/send"/>
+          </div>
+          <div class="form-group">
+            <label>Default Sender Number (with country code, no +)</label>
+            <input type="text" id="settingsSender" placeholder="919876543210"/>
+          </div>
+          <div class="form-group">
+            <label>Message Template</label>
+            <textarea id="settingsMsgTemplate" rows="6" style="font-family:monospace;font-size:13px;"></textarea>
+            <p style="font-size:12px;color:var(--gray-400);margin-top:4px;">
+              Available placeholders: <code>{name}</code>, <code>{invoice_no}</code>, <code>{amount}</code>, <code>{due_date}</code>, <code>{status}</code>, <code>{title}</code>
+            </p>
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button class="btn btn-primary" onclick="saveWASettings()"><i class="fas fa-save"></i> Save Settings</button>
+            <button class="btn btn-outline" onclick="resetWATemplate()"><i class="fas fa-undo"></i> Reset Template</button>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
@@ -324,7 +385,11 @@ select.status-sel{padding:5px 10px;border-radius:8px;border:1.5px solid var(--gr
         <div class="form-group"><label>Full Name *</label><input id="uName" placeholder="John Doe"/></div>
         <div class="form-group"><label>Email *</label><input id="uEmail" type="email" placeholder="john@company.com"/></div>
         <div class="form-group"><label>Password *</label><input id="uPassword" type="password" placeholder="Min 6 chars"/></div>
-        <div class="form-group"><label>Phone</label><input id="uPhone" placeholder="+91 9876543210"/></div>
+        <div class="form-group">
+          <label>Phone (with country code) *</label>
+          <input id="uPhone" placeholder="919876543210" title="Required for WhatsApp notifications"/>
+          <p style="font-size:11px;color:var(--gray-400);margin-top:3px;"><i class="fab fa-whatsapp" style="color:var(--whatsapp)"></i> Used for WhatsApp invoice alerts</p>
+        </div>
         <div class="form-group"><label>Company</label><input id="uCompany" placeholder="Acme Corp"/></div>
         <div class="form-group"><label>Role</label>
           <select id="uRole"><option value="user">User</option><option value="superadmin">SuperAdmin</option></select>
@@ -353,18 +418,51 @@ select.status-sel{padding:5px 10px;border-radius:8px;border:1.5px solid var(--gr
     <div class="modal-body">
       <div id="invModalAlert"></div>
       <input type="hidden" id="iId"/>
+
+      <!-- ===== WHATSAPP TOGGLE ===== -->
+      <div class="wa-toggle-wrap" id="waToggleSection">
+        <i class="fab fa-whatsapp wa-icon"></i>
+        <label style="flex:1;">
+          <div style="display:flex;align-items:center;justify-content:space-between;width:100%;">
+            <div>
+              <div style="font-weight:700;color:#14532D;">Send WhatsApp Notification</div>
+              <div style="font-size:12px;font-weight:400;color:#16A34A;margin-top:2px;">Customer will receive invoice details on WhatsApp</div>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="waSendToggle" checked onchange="updateWAPreview()"/>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </label>
+      </div>
+      <!-- API key not configured hint -->
+      <div id="waConfigHint" style="display:none;align-items:center;gap:8px;background:#FFFBEB;border:1.5px solid #FDE68A;border-radius:10px;padding:10px 14px;margin-bottom:12px;font-size:13px;color:#92400E;">
+        <i class="fas fa-exclamation-triangle"></i>
+        <span>WhatsApp API key not set — <strong style="cursor:pointer;text-decoration:underline" onclick="closeModal('invoiceModal');showPage('settings')">Go to WA Settings</strong> to configure it first. Toggle is still saved.</span>
+      </div>
+      <div id="waPreviewSection" style="margin-bottom:16px;">
+        <div class="wa-preview-label"><i class="fab fa-whatsapp"></i> Message Preview</div>
+        <div class="wa-preview-box" id="waPreviewBox">Loading preview...</div>
+      </div>
+
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
         <div class="form-group">
           <label>Assign to User *</label>
-          <select id="iUserId"><option value="">— Select User —</option></select>
+          <select id="iUserId" onchange="updateWAPreview()"><option value="">— Select User —</option></select>
         </div>
-        <div class="form-group"><label>Invoice Title *</label><input id="iTitle" placeholder="e.g. Website Development"/></div>
+        <div class="form-group"><label>Invoice Title *</label><input id="iTitle" placeholder="e.g. Website Development" oninput="updateWAPreview()"/></div>
         <div class="form-group"><label>Issue Date</label><input id="iIssueDate" type="date"/></div>
-        <div class="form-group"><label>Due Date</label><input id="iDueDate" type="date"/></div>
+        <div class="form-group"><label>Due Date</label><input id="iDueDate" type="date" oninput="updateWAPreview()"/></div>
         <div class="form-group"><label>Tax Rate (%)</label><input id="iTaxRate" type="number" value="18" min="0" max="100" oninput="recalcTotal()"/></div>
         <div class="form-group"><label>Discount (₹)</label><input id="iDiscount" type="number" value="0" min="0" oninput="recalcTotal()"/></div>
         <div class="form-group"><label>Status</label>
-          <select id="iStatus"><option value="draft">Draft</option><option value="sent">Sent</option><option value="paid">Paid</option><option value="overdue">Overdue</option><option value="cancelled">Cancelled</option></select>
+          <select id="iStatus" onchange="updateWAPreview()">
+            <option value="draft">Draft</option>
+            <option value="sent">Sent</option>
+            <option value="paid">Paid</option>
+            <option value="overdue">Overdue</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
         </div>
       </div>
       <div class="form-group"><label>Description</label><textarea id="iDesc" rows="2" placeholder="Brief description..."></textarea></div>
@@ -388,7 +486,7 @@ select.status-sel{padding:5px 10px;border-radius:8px;border:1.5px solid var(--gr
     </div>
     <div class="modal-footer">
       <button class="btn btn-outline" onclick="closeModal('invoiceModal')">Cancel</button>
-      <button class="btn btn-primary" onclick="saveInvoice()"><i class="fas fa-save"></i> Save Invoice</button>
+      <button class="btn btn-primary" onclick="saveInvoice()"><i class="fas fa-save"></i> Save &amp; Send</button>
     </div>
   </div>
 </div>
@@ -399,6 +497,7 @@ select.status-sel{padding:5px 10px;border-radius:8px;border:1.5px solid var(--gr
     <div class="modal-header">
       <h3>Invoice Preview</h3>
       <div style="display:flex;gap:10px;align-items:center;">
+        <button class="btn btn-whatsapp btn-sm" onclick="sendWAFromView()"><i class="fab fa-whatsapp"></i> Send WA</button>
         <button class="btn btn-outline btn-sm" onclick="printInvoice()"><i class="fas fa-print"></i> Print</button>
         <button class="close-btn" onclick="closeModal('viewModal')">&times;</button>
       </div>
@@ -407,11 +506,182 @@ select.status-sel{padding:5px 10px;border-radius:8px;border:1.5px solid var(--gr
   </div>
 </div>
 
+<!-- ========== WA SEND RESULT TOAST ========== -->
+<div id="waToast" style="position:fixed;bottom:28px;right:28px;z-index:9999;display:none;">
+  <div style="background:var(--gray-900);color:#fff;padding:14px 20px;border-radius:12px;font-size:14px;display:flex;align-items:center;gap:10px;box-shadow:0 8px 32px rgba(0,0,0,.25);">
+    <i id="waToastIcon" class="fab fa-whatsapp" style="font-size:18px;"></i>
+    <span id="waToastMsg">Sending...</span>
+  </div>
+</div>
+
 <script>
 const API = '';
 let token = localStorage.getItem('bf_token');
 let currentUser = JSON.parse(localStorage.getItem('bf_user') || 'null');
 let allInvoices = [], allUsers = [];
+let currentViewInvoice = null; // track currently viewed invoice for WA send
+
+// ===== WHATSAPP CONFIG =====
+const WA_DEFAULT_TEMPLATE = `Hello {name} 👋
+
+Your invoice has been created on BillFlow.
+
+📄 *Invoice:* {invoice_no}
+📝 *Title:* {title}
+💰 *Amount:* {amount}
+📅 *Due Date:* {due_date}
+📌 *Status:* {status}
+
+Please make the payment by the due date to avoid any late fees.
+
+Thank you for your business! 🙏`;
+
+// ===== PRE-CONFIGURED DEFAULTS (change here to update globally) =====
+const WA_DEFAULT_API_KEY = 'f2845d39c75c4901b4ce35f672392da6';
+const WA_DEFAULT_API_URL = 'http://login.cloudwhatsapp.com/wapp/api/send';
+
+function getWAConfig() {
+  return {
+    apiKey: localStorage.getItem('wa_api_key') || WA_DEFAULT_API_KEY,
+    apiUrl: localStorage.getItem('wa_api_url') || WA_DEFAULT_API_URL,
+    sender: localStorage.getItem('wa_sender') || '',
+    template: localStorage.getItem('wa_template') || WA_DEFAULT_TEMPLATE,
+  };
+}
+
+function saveWASettings() {
+  const apiKey = document.getElementById('settingsApiKey').value.trim();
+  const apiUrl = document.getElementById('settingsApiUrl').value.trim();
+  const sender = document.getElementById('settingsSender').value.trim();
+  const template = document.getElementById('settingsMsgTemplate').value;
+  if (!apiKey) return showAlert('settingsAlert','API Key is required','error');
+  if (!apiUrl) return showAlert('settingsAlert','API URL is required','error');
+  localStorage.setItem('wa_api_key', apiKey);
+  localStorage.setItem('wa_api_url', apiUrl);
+  localStorage.setItem('wa_sender', sender);
+  localStorage.setItem('wa_template', template);
+  showAlert('settingsAlert','WhatsApp settings saved successfully!','success');
+}
+
+function resetWATemplate() {
+  document.getElementById('settingsMsgTemplate').value = WA_DEFAULT_TEMPLATE;
+}
+
+function loadWASettings() {
+  const cfg = getWAConfig();
+  document.getElementById('settingsApiKey').value = cfg.apiKey;
+  document.getElementById('settingsApiUrl').value = cfg.apiUrl;
+  document.getElementById('settingsSender').value = cfg.sender;
+  document.getElementById('settingsMsgTemplate').value = cfg.template;
+  // Show a success banner if the default key is active
+  if (cfg.apiKey === WA_DEFAULT_API_KEY && !localStorage.getItem('wa_api_key')) {
+    showAlert('settingsAlert', '<i class="fas fa-check-circle"></i> Default API key is active. You can override it here if needed.', 'success');
+  }
+}
+
+/**
+ * Build the WhatsApp message from the template + invoice data
+ */
+function buildWAMessage(inv) {
+  const cfg = getWAConfig();
+  return cfg.template
+    .replace(/{name}/g, inv.user_name || 'Customer')
+    .replace(/{invoice_no}/g, inv.invoice_number || '')
+    .replace(/{title}/g, inv.title || '')
+    .replace(/{amount}/g, fmt(inv.total))
+    .replace(/{due_date}/g, fmtDate(inv.due_date))
+    .replace(/{status}/g, (inv.status || 'draft').charAt(0).toUpperCase() + (inv.status||'draft').slice(1));
+}
+
+/**
+ * Send WhatsApp via your FastAPI backend proxy endpoint.
+ * Backend calls CloudWhatsApp to avoid browser CORS restrictions.
+ *
+ * FastAPI route needed:  POST /api/whatsapp/send
+ * Request body:  { mobile: str, msg: str }
+ * Backend uses the hardcoded API key to forward to CloudWhatsApp.
+ *
+ * See the backend snippet below this file for the FastAPI route.
+ */
+async function sendWhatsApp(phone, message) {
+  const cfg = getWAConfig();
+  if (!phone) throw new Error('No phone number available for this user.');
+
+  // Sanitise phone: strip spaces, dashes, +, ()
+  let cleanPhone = String(phone).replace(/[\s\-+()]/g, '');
+  // Auto-prefix India country code: if 10 digits starting with 6-9, prepend 91
+  if (/^[6-9]\d{9}$/.test(cleanPhone)) cleanPhone = '91' + cleanPhone;
+
+  // Route through Node/Express backend to avoid browser CORS restrictions.
+  // Backend endpoint: POST /api/whatsapp/send  (whatsappRouter.js)
+  const res = await fetch('/api/whatsapp/send', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ mobile: cleanPhone, msg: message }),
+  });
+
+  let data;
+  try { data = await res.json(); } catch { data = { status: res.ok ? 'success' : 'error', error: 'Unexpected response from server' }; }
+
+  if (!res.ok) {
+    const errMsg = data.error || data.message || data.detail || `Server error ${res.status}`;
+    throw new Error(errMsg);
+  }
+  if (data.status && String(data.status).toLowerCase() === 'error') {
+    throw new Error(data.error || data.message || 'CloudWhatsApp rejected the request');
+  }
+  return data;
+}
+
+function showWAToast(msg, ok = true) {
+  const t = document.getElementById('waToast');
+  document.getElementById('waToastIcon').style.color = ok ? '#25D366' : '#EF4444';
+  document.getElementById('waToastMsg').textContent = msg;
+  t.style.display = 'block';
+  clearTimeout(window._waToastTimer);
+  window._waToastTimer = setTimeout(() => t.style.display = 'none', 4000);
+}
+
+// Update WA preview box in invoice modal
+function updateWAPreview() {
+  const toggle = document.getElementById('waSendToggle');
+  const preview = document.getElementById('waPreviewSection');
+  if (!toggle.checked) { preview.style.display = 'none'; return; }
+  preview.style.display = 'block';
+
+  // Build a partial invoice object from current modal inputs
+  const selUser = document.getElementById('iUserId');
+  const selOpt = selUser.options[selUser.selectedIndex];
+  const mockInv = {
+    user_name: selOpt && selOpt.value ? selOpt.text.split('(')[0].trim() : 'Customer',
+    invoice_number: 'INV-XXXX',
+    title: document.getElementById('iTitle')?.value || 'Invoice Title',
+    total: parseFloat(document.getElementById('preTotal')?.textContent?.replace(/[^0-9.]/g,'') || 0),
+    due_date: document.getElementById('iDueDate')?.value || null,
+    status: document.getElementById('iStatus')?.value || 'draft',
+  };
+  document.getElementById('waPreviewBox').textContent = buildWAMessage(mockInv);
+}
+
+// Send WA from the view modal ("Send WA" button)
+async function sendWAFromView() {
+  if (!currentViewInvoice) return;
+  const inv = currentViewInvoice;
+  const cfg = getWAConfig();
+  if (!cfg.apiKey) {
+    showWAToast('API key not set — go to WA Settings', false);
+    return;
+  }
+  const phone = inv.user_phone;
+  if (!phone) { showWAToast('No phone number on this user', false); return; }
+  showWAToast('Sending WhatsApp...', true);
+  try {
+    await sendWhatsApp(phone, buildWAMessage(inv));
+    showWAToast(`✓ WhatsApp sent to ${phone}`, true);
+  } catch(e) {
+    showWAToast('WA failed: ' + e.message, false);
+  }
+}
 
 // ===== UTILS =====
 const fmt = (n) => '₹' + parseFloat(n||0).toLocaleString('en-IN', {minimumFractionDigits:2, maximumFractionDigits:2});
@@ -470,18 +740,19 @@ function initApp() {
 }
 
 function showPage(page) {
-  ['dashboard','invoices','users'].forEach(p => {
+  ['dashboard','invoices','users','settings'].forEach(p => {
     document.getElementById('page-'+p).classList.add('hidden');
     document.getElementById('nav-'+p)?.classList.remove('active');
   });
   document.getElementById('page-'+page).classList.remove('hidden');
   document.getElementById('nav-'+page)?.classList.add('active');
-  const titles = { dashboard:'Dashboard', invoices:'Invoices', users:'User Management' };
+  const titles = { dashboard:'Dashboard', invoices:'Invoices', users:'User Management', settings:'WhatsApp Settings' };
   document.getElementById('pageTitle').textContent = titles[page];
   closeSidebar();
   if (page === 'dashboard') loadDashboard();
   if (page === 'invoices') loadInvoices();
   if (page === 'users') loadUsers();
+  if (page === 'settings') loadWASettings();
 }
 
 // ===== SIDEBAR =====
@@ -501,6 +772,7 @@ function openModal(id) { document.getElementById(id).classList.remove('hidden');
 // ===== DASHBOARD =====
 async function loadDashboard() {
   try {
+    const invs = await apiFetch('/api/invoices');
     if (currentUser.role === 'superadmin') {
       const stats = await apiFetch('/api/invoices/stats/summary');
       document.getElementById('kpiGrid').innerHTML = `
@@ -509,8 +781,18 @@ async function loadDashboard() {
         <div class="kpi-card"><div class="kpi-icon purple"><i class="fas fa-check-circle"></i></div><div class="kpi-body"><small>Amount Paid</small><strong>${fmt(stats.paid_amount)}</strong></div></div>
         <div class="kpi-card"><div class="kpi-icon red"><i class="fas fa-exclamation-circle"></i></div><div class="kpi-body"><small>Overdue</small><strong>${fmt(stats.overdue_amount)}</strong></div></div>
         <div class="kpi-card"><div class="kpi-icon yellow"><i class="fas fa-users"></i></div><div class="kpi-body"><small>Total Users</small><strong>${stats.total_users||0}</strong></div></div>`;
+    } else {
+      const toNum = (v) => parseFloat(v || 0);
+      const sumWhere = (pred) => invs.filter(pred).reduce((sum, i) => sum + toNum(i.total), 0);
+      const paidAmount = sumWhere(i => i.status === 'paid');
+      const overdueAmount = sumWhere(i => i.status === 'overdue');
+      const pendingAmount = sumWhere(i => i.status !== 'paid' && i.status !== 'cancelled');
+      document.getElementById('kpiGrid').innerHTML = `
+        <div class="kpi-card"><div class="kpi-icon blue"><i class="fas fa-file-invoice"></i></div><div class="kpi-body"><small>Total Invoices</small><strong>${invs.length}</strong></div></div>
+        <div class="kpi-card"><div class="kpi-icon green"><i class="fas fa-check-circle"></i></div><div class="kpi-body"><small>Amount Paid</small><strong>${fmt(paidAmount)}</strong></div></div>
+        <div class="kpi-card"><div class="kpi-icon yellow"><i class="fas fa-hourglass-half"></i></div><div class="kpi-body"><small>Pending Amount</small><strong>${fmt(pendingAmount)}</strong></div></div>
+        <div class="kpi-card"><div class="kpi-icon red"><i class="fas fa-exclamation-circle"></i></div><div class="kpi-body"><small>Overdue</small><strong>${fmt(overdueAmount)}</strong></div></div>`;
     }
-    const invs = await apiFetch('/api/invoices');
     const recent = invs.slice(0, 7);
     document.getElementById('recentTable').innerHTML = recent.length ? renderInvoiceTable(recent, true) : '<div class="empty"><i class="fas fa-file-invoice"></i><p>No invoices yet</p></div>';
   } catch(e) { console.error(e); }
@@ -550,7 +832,11 @@ function renderInvoiceTable(list, compact=false) {
       <tr>
         <td><strong style="color:var(--primary)">${inv.invoice_number}</strong></td>
         <td>${inv.title}</td>
-        ${isAdmin?`<td><div style="font-weight:500">${inv.user_name}</div><div style="font-size:12px;color:var(--gray-400)">${inv.user_email}</div></td>`:''}
+        ${isAdmin?`<td>
+          <div style="font-weight:500">${inv.user_name}</div>
+          <div style="font-size:12px;color:var(--gray-400)">${inv.user_email}</div>
+          ${inv.user_phone ? `<div style="font-size:11px;color:var(--whatsapp);margin-top:1px"><i class="fab fa-whatsapp"></i> ${inv.user_phone}</div>` : '<div style="font-size:11px;color:var(--warning);margin-top:1px"><i class="fas fa-exclamation-triangle"></i> No phone</div>'}
+        </td>`:''}
         <td>${fmtDate(inv.issue_date)}</td>
         <td>${fmtDate(inv.due_date)}</td>
         <td><strong>${fmt(inv.total)}</strong></td>
@@ -558,12 +844,33 @@ function renderInvoiceTable(list, compact=false) {
         <td>
           <div style="display:flex;gap:6px;flex-wrap:wrap">
             <button class="btn btn-outline btn-sm" onclick="viewInvoice('${inv.id}')"><i class="fas fa-eye"></i></button>
-            ${isAdmin?`<button class="btn btn-primary btn-sm" onclick="editInvoice('${inv.id}')"><i class="fas fa-edit"></i></button>
+            ${isAdmin?`
+            <button class="btn btn-whatsapp btn-sm" onclick="quickSendWA('${inv.id}')" title="Send WhatsApp"><i class="fab fa-whatsapp"></i></button>
+            <button class="btn btn-primary btn-sm" onclick="editInvoice('${inv.id}')"><i class="fas fa-edit"></i></button>
             <button class="btn btn-danger btn-sm" onclick="deleteInvoice('${inv.id}','${inv.invoice_number}')"><i class="fas fa-trash"></i></button>`:''}
           </div>
         </td>
       </tr>`).join('')}
     </tbody></table>`;
+}
+
+/**
+ * Quick-send WhatsApp from the invoice list (without opening modal)
+ */
+async function quickSendWA(invId) {
+  const cfg = getWAConfig();
+  if (!cfg.apiKey) {
+    showWAToast('Configure API key in WA Settings first', false); return;
+  }
+  try {
+    const inv = await apiFetch(`/api/invoices/${invId}`);
+    if (!inv.user_phone) { showWAToast('No phone number for this user', false); return; }
+    showWAToast('Sending WhatsApp…', true);
+    await sendWhatsApp(inv.user_phone, buildWAMessage(inv));
+    showWAToast(`✓ Sent to ${inv.user_phone}`, true);
+  } catch(e) {
+    showWAToast('Failed: ' + e.message, false);
+  }
 }
 
 function statusBadge(s) {
@@ -583,18 +890,36 @@ async function openInvoiceModal(inv=null) {
   document.getElementById('iDiscount').value = inv?.discount ?? 0;
   document.getElementById('iStatus').value = inv?.status || 'draft';
 
-  // Load users for dropdown
+  // WA toggle — always enabled; API key warning shown only at save time
+  const cfg = getWAConfig();
+  const waSection = document.getElementById('waToggleSection');
+  waSection.style.opacity = '1';
+  waSection.title = '';
+  const waTog = document.getElementById('waSendToggle');
+  waTog.disabled = false;
+  waTog.checked = true;
+  const waHint = document.getElementById('waConfigHint');
+  if (waHint) waHint.style.display = cfg.apiKey ? 'none' : 'flex';
+
   const users = await apiFetch('/api/users');
+  const activeUsers = users.filter(u => u.is_active !== false);
   const sel = document.getElementById('iUserId');
-  sel.innerHTML = '<option value="">— Select User —</option>' +
-    users.filter(u=>u.role==='user').map(u=>`<option value="${u.id}">${u.name} (${u.email})</option>`).join('');
+  if (!activeUsers.length) {
+    sel.innerHTML = '<option value="">No users found — create a user first</option>';
+  } else {
+    sel.innerHTML = '<option value="">Select User</option>' +
+      activeUsers.map(u => {
+        const hasPhone = u.phone ? '' : ' ⚠️ no phone';
+        return `<option value="${u.id}">${u.name} (${u.email})${hasPhone}${u.role === 'superadmin' ? ' [Admin]' : ''}</option>`;
+      }).join('');
+  }
   if (inv?.user_id) sel.value = inv.user_id;
 
-  // Items
   const tbody = document.getElementById('itemsBody');
   tbody.innerHTML = '';
   (inv?.items || [{}]).forEach(item => addItemRow(item));
   recalcTotal();
+  updateWAPreview();
   openModal('invoiceModal');
 }
 
@@ -602,10 +927,10 @@ function addItemRow(item={}) {
   const tr = document.createElement('tr');
   tr.innerHTML = `
     <td><input type="text" placeholder="Service / Product description" value="${item.description||''}"/></td>
-    <td><input type="number" placeholder="1" value="${item.quantity||1}" min="0.01" step="0.01" oninput="recalcTotal()"/></td>
-    <td><input type="number" placeholder="0.00" value="${item.unit_price||''}" min="0" step="0.01" oninput="recalcTotal()"/></td>
+    <td><input type="number" placeholder="1" value="${item.quantity||1}" min="0.01" step="0.01" oninput="recalcTotal();updateWAPreview()"/></td>
+    <td><input type="number" placeholder="0.00" value="${item.unit_price||''}" min="0" step="0.01" oninput="recalcTotal();updateWAPreview()"/></td>
     <td class="row-total" style="font-weight:600">${fmt((item.quantity||1)*(item.unit_price||0))}</td>
-    <td><button onclick="this.closest('tr').remove();recalcTotal();" style="background:none;border:none;cursor:pointer;color:var(--danger);font-size:14px"><i class="fas fa-times"></i></button></td>`;
+    <td><button onclick="this.closest('tr').remove();recalcTotal();updateWAPreview();" style="background:none;border:none;cursor:pointer;color:var(--danger);font-size:14px"><i class="fas fa-times"></i></button></td>`;
   document.getElementById('itemsBody').appendChild(tr);
 }
 
@@ -625,6 +950,7 @@ function recalcTotal() {
   document.getElementById('preDiscount').textContent = fmt(disc);
   document.getElementById('preTax').textContent = fmt(tax);
   document.getElementById('preTotal').textContent = fmt(total);
+  updateWAPreview();
 }
 
 function getItemRows() {
@@ -650,12 +976,46 @@ async function saveInvoice() {
     items
   };
   if (!body.user_id || !body.title) return showAlert('invModalAlert','User and title are required');
+
+  const sendWA = document.getElementById('waSendToggle').checked;
+
   try {
-    if (id) await apiFetch(`/api/invoices/${id}`, {method:'PUT', body:JSON.stringify(body)});
-    else await apiFetch('/api/invoices', {method:'POST', body:JSON.stringify(body)});
+    let savedInv;
+    if (id) {
+      savedInv = await apiFetch(`/api/invoices/${id}`, {method:'PUT', body:JSON.stringify(body)});
+    } else {
+      savedInv = await apiFetch('/api/invoices', {method:'POST', body:JSON.stringify(body)});
+    }
+
     closeModal('invoiceModal');
     loadInvoices();
-    if (document.getElementById('page-dashboard').classList.contains('hidden') === false) loadDashboard();
+    if (!document.getElementById('page-dashboard').classList.contains('hidden')) loadDashboard();
+
+    // ===== SEND WHATSAPP AFTER SAVE =====
+    if (sendWA) {
+      const cfg = getWAConfig();
+      if (!cfg.apiKey) {
+        showWAToast('Invoice saved. WA not sent — no API key configured.', false);
+      } else {
+        // Fetch full invoice to get user phone
+        try {
+          const invId = savedInv?.id || id;
+          const fullInv = await apiFetch(`/api/invoices/${invId}`);
+          if (!fullInv.user_phone) {
+            showWAToast('Invoice saved. No phone number — WA skipped.', false);
+          } else {
+            showWAToast('Invoice saved. Sending WhatsApp…', true);
+            await sendWhatsApp(fullInv.user_phone, buildWAMessage(fullInv));
+            showWAToast(`✓ Invoice saved & WhatsApp sent to ${fullInv.user_phone}`, true);
+          }
+        } catch(waErr) {
+          showWAToast('Invoice saved. WA failed: ' + waErr.message, false);
+        }
+      }
+    } else {
+      showWAToast('Invoice saved (WhatsApp skipped).', true);
+    }
+
   } catch(e) { showAlert('invModalAlert', e.message); }
 }
 
@@ -677,6 +1037,7 @@ async function deleteInvoice(id, num) {
 async function viewInvoice(id) {
   try {
     const inv = await apiFetch(`/api/invoices/${id}`);
+    currentViewInvoice = inv;
     document.getElementById('invoicePrintArea').innerHTML = buildInvoiceHTML(inv);
     openModal('viewModal');
   } catch(e) { alert(e.message); }
@@ -698,7 +1059,7 @@ function buildInvoiceHTML(inv) {
   <div class="inv-section">
     <div class="inv-block">
       <small>Billed To</small>
-      <p><strong>${inv.user_name||'—'}</strong><br>${inv.user_email||''}<br>${inv.user_phone||''}<br>${inv.user_company||''}<br>${inv.user_address||''}</p>
+      <p><strong>${inv.user_name||'—'}</strong><br>${inv.user_email||''}<br>${inv.user_phone ? '<span style="color:#25D366"><i class="fab fa-whatsapp"></i> '+inv.user_phone+'</span>' : '<span style="color:#F59E0B">No phone number</span>'}<br>${inv.user_company||''}<br>${inv.user_address||''}</p>
     </div>
     <div class="inv-block">
       <small>Invoice Details</small>
@@ -737,12 +1098,30 @@ function buildInvoiceHTML(inv) {
 function printInvoice() {
   const html = document.getElementById('invoicePrintArea').innerHTML;
   const win = window.open('','_blank');
-  win.document.write(`<html><head><title>Invoice</title>
+  win.document.write(`<!DOCTYPE html><html><head><title>Invoice</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
-    <style>body{font-family:Inter,sans-serif;padding:40px;max-width:800px;margin:0 auto;color:#1F2937;}
-    .inv-title{font-size:32px;font-weight:800;color:#4F46E5;}.badge{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:600;background:#EFF6FF;color:#3B82F6;}
-    </style></head><body>${html}</body></html>`);
-  win.document.close(); win.print();
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+    <style>
+      *{box-sizing:border-box;margin:0;padding:0;}
+      body{font-family:'Inter',sans-serif;padding:40px;max-width:820px;margin:0 auto;color:#1F2937;}
+      .inv-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:32px;}
+      .inv-title{font-size:32px;font-weight:800;color:#4F46E5;}
+      .inv-number{font-size:13px;color:#6B7280;margin-top:4px;}
+      .inv-company{font-size:20px;font-weight:700;}
+      .inv-section{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:28px;}
+      .inv-block small{font-size:11px;color:#9CA3AF;text-transform:uppercase;font-weight:600;letter-spacing:.5px;display:block;margin-bottom:4px;}
+      .inv-block p{font-size:14px;line-height:1.7;}
+      .inv-totals{margin-top:16px;margin-left:auto;width:280px;}
+      .inv-totals table{width:100%;border-collapse:collapse;}
+      .inv-totals td{padding:6px 10px;font-size:14px;}
+      .inv-totals .grand{font-weight:700;font-size:16px;border-top:2px solid #111827;}
+      .badge{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:600;background:#EFF6FF;color:#3B82F6;}
+      table{width:100%;border-collapse:collapse;}
+      @media print{body{padding:16px;}}
+    </style>
+  </head><body>${html}</body></html>`);
+  win.document.close();
+  setTimeout(() => win.print(), 700);
 }
 
 // ===== USERS =====
@@ -761,13 +1140,13 @@ function filterUsers() {
 function renderUserList(list) {
   document.getElementById('usersTable').innerHTML = list.length ? `
     <table><thead><tr>
-      <th>Name</th><th>Email</th><th>Company</th><th>Phone</th><th>Role</th><th>Status</th><th>Joined</th><th>Actions</th>
+      <th>Name</th><th>Email</th><th>Company</th><th>Phone / WA</th><th>Role</th><th>Status</th><th>Joined</th><th>Actions</th>
     </tr></thead>
     <tbody>${list.map(u=>`<tr>
       <td><div style="display:flex;align-items:center;gap:10px"><div class="user-avatar" style="width:32px;height:32px;font-size:12px;background:var(--primary);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0">${u.name[0].toUpperCase()}</div><strong>${u.name}</strong></div></td>
       <td>${u.email}</td>
       <td>${u.company||'—'}</td>
-      <td>${u.phone||'—'}</td>
+      <td>${u.phone ? `<span style="color:var(--whatsapp);font-weight:500"><i class="fab fa-whatsapp"></i> ${u.phone}</span>` : '<span style="color:var(--warning);font-size:12px"><i class="fas fa-exclamation-triangle"></i> No phone</span>'}</td>
       <td><span class="badge badge-${u.role}">${u.role}</span></td>
       <td><span class="badge badge-${u.is_active?'active':'inactive'}">${u.is_active?'Active':'Inactive'}</span></td>
       <td>${fmtDate(u.created_at)}</td>
@@ -783,6 +1162,7 @@ function openUserModal() {
   document.getElementById('uId').value = '';
   document.getElementById('uName').value = '';
   document.getElementById('uEmail').value = '';
+  document.getElementById('uEmail').disabled = false;
   document.getElementById('uPassword').value = '';
   document.getElementById('uPhone').value = '';
   document.getElementById('uCompany').value = '';
@@ -818,7 +1198,6 @@ async function saveUser() {
   const pw = document.getElementById('uPassword').value;
   if (!name || !email) return showAlert('userModalAlert','Name and email are required');
   if (!id && !pw) return showAlert('userModalAlert','Password is required for new users');
-
   try {
     if (id) {
       await apiFetch(`/api/users/${id}`, {method:'PUT', body:JSON.stringify({
@@ -848,11 +1227,7 @@ async function deleteUser(id, name) {
 }
 
 // ===== AUTO-START =====
-if (token && currentUser) {
-  initApp();
-}
-
-// Enter key login
+if (token && currentUser) initApp();
 document.getElementById('loginPassword').addEventListener('keydown', e => { if(e.key==='Enter') login(); });
 </script>
 </body>

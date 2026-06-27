@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const pool = require('../db/pool');
 const { auth, superadminOnly } = require('../middleware/auth');
+const { sendInvoiceEmail } = require('./mailer');
 
 // Auto-generate invoice number
 async function nextInvoiceNumber() {
@@ -94,6 +95,21 @@ router.post('/', auth, superadminOnly, async (req, res) => {
 
     const itemsRes = await pool.query('SELECT * FROM invoice_items WHERE invoice_id=$1', [inv.id]);
     inv.items = itemsRes.rows;
+
+    // Auto-send the invoice to the user's registered email.
+    // Wrapped separately so a mail failure never breaks invoice creation itself.
+    try {
+      const { rows: [userRow] } = await pool.query('SELECT name, email FROM users WHERE id=$1', [inv.user_id]);
+      if (userRow) {
+        await sendInvoiceEmail(inv, userRow);
+        inv.email_sent = true;
+      }
+    } catch (mailErr) {
+      console.error(`Failed to email invoice ${inv.invoice_number}:`, mailErr.message);
+      inv.email_sent = false;
+      inv.email_error = mailErr.message;
+    }
+
     res.status(201).json(inv);
   } catch (err) {
     await client.query('ROLLBACK');
